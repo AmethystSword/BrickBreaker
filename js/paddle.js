@@ -1,6 +1,7 @@
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
 function keyDownHandler(e) { // e = event - v event parametru jsou informace o udalosti
     if (e.key == "Right" || e.key == "ArrowRight" || e.keyCode == 39) { // pri stisku sipek jsou promenne pro stisk sipek 'true'
@@ -20,28 +21,16 @@ function keyUpHandler(e) {
     }
 }
 
-function drawPaddle() {
-    ctx.beginPath();
-    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
-    ctx.fillStyle = 'green';
-    ctx.fill();
-    ctx.closePath();
+function mouseMoveHandler(e) {
+    let relativeX = e.clientX - canvas.offsetLeft;
+    //canvas.offsetLeft = distance between the left edge of the canvas and left edge of the viewport
+    //e.clientX = horizontal position of mouse in viewport
+    if (relativeX >= 0 + paddleWidth/2 && relativeX <= canvas.width - paddleWidth/2) {
+        paddleX = relativeX - paddleWidth/2;
+    }
 }
- function paddleLogic() {
-      //paddle logic
-      if (rightArrowPressed) {
-        paddleX += 8;
-        if (paddleX + paddleWidth > canvas.width) {
-            paddleX = canvas.width - paddleWidth;
-        }
-    }
-    if (leftArrowPressed) {
-        paddleX -= 8;
-        if (paddleX < 0) {
-            paddleX = 0;
-        }
-    }
- }
+
+
 
 
 
