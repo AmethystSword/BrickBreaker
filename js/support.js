@@ -1,19 +1,3 @@
-//LOADING IMAGES STARTS RIGHT HERE...
-
-const bg_img = new Image();
-bg_img.src = 'img/bgIMG.jpg';
-
-const life_img = new Image();
-life_img.src = 'img/life.png';
-
-const score_img = new Image();
-score_img.src = 'img/score.png';
-
-const level_img = new Image();
-level_img.src = 'img/level.png';
-
-//LOADING IMAGES END HERE...
-
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 document.addEventListener('mousemove', mouseMoveHandler, false);
@@ -45,6 +29,20 @@ function mouseMoveHandler(e) {
     }
 }
 
+again.style.top = `${(canvas.height/100) * 70}px`;
+again.style.left = `${(canvas.width/100) * 41.7}px`;
+
+win.style.left = `${(canvas.width/100) * 39.5}px`;
+win.style.top = `${canvas.height/100 * 26}px`;
+
+lose.style.width = `${canvas.width}px`;
+lose.style.top = `-30px`;
+
+endScreen.style.width = `${canvas.width}px`;
+endScreen.style.height = `${canvas.height}px`;
+
+victory.style.left = `${(canvas.width/100) * 36.5}px`;
+victory.style.top = `20px`;
 
 
 
