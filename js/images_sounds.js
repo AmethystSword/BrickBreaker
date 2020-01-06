@@ -1,3 +1,6 @@
+let canvas = document.getElementById('gameScreen');
+let ctx = canvas.getContext('2d');
+
 //LOADING IMAGES STARTS RIGHT HERE...
 
 
@@ -11,7 +14,7 @@ const level_img = new Image();
 level_img.src = 'img/level.png';
 
 const bg_img = new Image();
-bg_img.src = 'img/bg1.jpg';
+bg_img.src = 'img/bg3.jpg';
 
 const pokeball = new Image();
 pokeball.src = 'img/pokeball1.png';
@@ -47,3 +50,10 @@ const happy_end = new Audio();
 happy_end.src = 'sounds/happy_end.mp3';
 
 //LOADING SOUNDS END HERE...
+
+
+$('#press').css('left', `${canvas.width/100*68}px`);
+$('#press').css('top', `${canvas.height/100 * 93}px`);
+$('.icons').css('top', `${canvas.height - 30}px`);
+$('#sound').css('left', '23px');
+$('#pause').css('left', '70px');

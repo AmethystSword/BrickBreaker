@@ -29,21 +29,20 @@ function mouseMoveHandler(e) {
     }
 }
 
-again.style.top = `${(canvas.height/100) * 70}px`;
+again.style.top = `${(canvas.height/100) * 75}px`;
 again.style.left = `${(canvas.width/100) * 41.7}px`;
 
 win.style.left = `${(canvas.width/100) * 39.5}px`;
-win.style.top = `${canvas.height/100 * 26}px`;
+win.style.top = `${canvas.height/100 * 30}px`;
 
 lose.style.width = `${canvas.width}px`;
-lose.style.top = `-30px`;
+lose.style.top = `-45px`;
 
 endScreen.style.width = `${canvas.width}px`;
 endScreen.style.height = `${canvas.height}px`;
 
 victory.style.left = `${(canvas.width/100) * 36.5}px`;
-victory.style.top = `20px`;
-
+victory.style.top = `${canvas.height/100 * 5}px`;
 
 
 

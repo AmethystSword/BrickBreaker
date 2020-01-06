@@ -1,5 +1,3 @@
-let canvas = document.getElementById('gameScreen');
-let ctx = canvas.getContext('2d');
 
 const PADDLE_HEIGHT = 20;
 let PADDLE_WIDTH = 200;
@@ -8,16 +6,15 @@ const BALL_RADIUS = 15;
 const bottomPaddleMargin = 50;
 
 let gameOver = false;
-let gamePaused = false;
+let gamePaused = true;
 
 let rightArrowPressed = false;
 let leftArrowPressed = false;
 
 let score = 0;
-let life = 6;
+let life = 5;
 let level = 1;
-const maxLevel = 5;
-let stopAfterRestart = false;
+const maxLevel = 6;
 
 const paddle = {
     x: canvas.width / 2 - PADDLE_WIDTH / 2,
@@ -69,8 +66,8 @@ const ball = {
     //strColor: 'black',
     //lineWidth: 3
 }
-const colors = ['green', 'blue', 'violet', 'yellow', 'red', 'pink', 'black', 'orange', '#fe997e', '#e7d2df', '#873b51', 
-'#d4636f', '#00688b', '#b3e885', '#362a52', '#41894d', '#f2e6e6', '#952572', '#ed1c24', '#6c446b'];
+const colors = ['green', 'pink', '#fe997e', '#e7d2df',
+    '#d4636f', '#b3e885', '#f2e6e6', '#952572', '#ed1c24'];
 function randomColor() {
     ball.fColor = colors[Math.round(Math.random() * colors.length)];
 }
@@ -81,7 +78,7 @@ function drawBall() {
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     if (ball.fColor === undefined) {
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'white';
     }
     else {
         ctx.fillStyle = ball.fColor;
@@ -266,18 +263,19 @@ function levelUp() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = paddle.y - ball.radius;
-    ball.dx = 3 * (Math.random() * 2 - 1); 
+    ball.dx = 3 * (Math.random() * 2 - 1);
     ball.dy = -(Math.sqrt(Math.pow(ball.speed, 2) - Math.pow(ball.dx, 2)));
     paddle.x = canvas.width / 2 - paddle.width / 2;
     paddle.y = canvas.height - paddle.height - bottomPaddleMargin;
-    stopAfterRestart = true;
+    pausePlayImg.src = 'img/play.png';
+    gamePaused = !gamePaused;
     draw();
 }
 
 //DRAW GAME STATISTICS -> LIVES, SCORE, LEVEL
 function drawGameStats(text, textX, textY, img, imgX, imgY) {
     //draw text
-    ctx.font = '500 30px Alegreya, serif';
+    ctx.font = '500 35px Alegreya, serif';
     ctx.fillStyle = 'black';
     ctx.fillText(text, textX, textY);
     //draw image
@@ -292,11 +290,11 @@ function draw() {
     drawBall();
     drawPaddle();
     //score
-    drawGameStats(score, 35, 25, score_img, 5, 5);
+    drawGameStats(score, 40, 30, score_img, 8, 8);
     //life
-    drawGameStats(life, canvas.width - 25, 25, life_img, canvas.width - 59, 0);
+    drawGameStats(life, canvas.width - 30, 30, life_img, canvas.width - 65, 5);
     //level
-    drawGameStats(level, canvas.width / 2, 25, level_img, canvas.width / 2 - 33, 5);
+    drawGameStats(level, canvas.width / 2, 30, level_img, canvas.width / 2 - 33, 8);
 }
 
 //UPDATE EVERYTHING
@@ -314,39 +312,39 @@ function update() {
 
 
 //ALL OVER AGAIN DOMINO EFFECT
-function EternalCycle() {   
-    if (gamePaused == true) { 
+function EternalCycle() {
+    if (gamePaused == true) {
         return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     draw();
     update();
-    
-    if (!gameOver) {
+
+    if (gameOver !== true) {
         requestAnimationFrame(EternalCycle);
     }
 }
 
-
-let enter = false;
-$(document).one('keydown', function (e) {
-                if (e.keyCode === 13 || e.keyCode === 32) {
-                    enter = true;
-                    EternalCycle();
-                    }
-                });
+let first = 0;
+//FIRST START
 $(document).keydown(function (e) {
-                if (e.keyCode == 80) {
-                    pausePlayManager();
-                }
-            });
+    if (e.keyCode == 80 || e.keyCode === 13 || e.keyCode === 32) {
+        if (first == 0) {
+            first = 1;
+            $('#press').fadeOut();
+            EternalCycle();
+        }
+        pausePlayManager();
+    }
+});
 
-ctx.font = '500 30px Alegreya, serif';
+
+ctx.font = '500 35px Alegreya, serif';
 ctx.fillStyle = 'black';
 ctx.fillText('', 50, 400); //bez tohohle se nejak spatne zobrazuje font xd
 
-window.onload = function() { draw(); } //draw once before moving
+window.onload = function () { draw(); } //draw once before moving
 
 
 //SOUND MUTE/UNMUTE BUTTON CHANGE
@@ -357,9 +355,9 @@ function audioManager() {
     let soundImgSrc = soundImg.getAttribute('src');
     //conditional (ternary) operator
     let soundImgNewSrc = soundImgSrc == 'img/SOUND_ON.png' ? 'img/SOUND_OFF.png' : 'img/SOUND_ON.png';
-// SoundImgSrc == 'img/SOUND_ON.png'     -->  condition 
-// ? execution -> if condition = true
-// : execution -> if condition = false
+    // SoundImgSrc == 'img/SOUND_ON.png'     -->  condition 
+    // ? execution -> if condition = true
+    // : execution -> if condition = false
     soundImg.setAttribute('src', soundImgNewSrc); //soundElement.src = soundImg
 
     paddle_wall_hit.muted = paddle_wall_hit.muted ? false : true;
@@ -375,17 +373,19 @@ let pausePlayImg = document.getElementById('pause');
 pausePlayImg.addEventListener('click', pausePlayManager);
 
 function pausePlayManager() {
+    console.log(ball.fColor);
     let pausePlayImgSrc = pausePlayImg.getAttribute('src');
     let pausePlayImgNewSrc = pausePlayImgSrc == 'img/pause.png' ? 'img/play.png' : 'img/pause.png';
     pausePlayImg.setAttribute('src', pausePlayImgNewSrc);
 
-    if (pausePlayImgSrc == 'img/pause.png' && enter == true) { //pause the game
-        gamePaused = !gamePaused;
-    }
-
-    if (pausePlayImgSrc == 'img/play.png' && enter == true) {
+    if (pausePlayImgNewSrc == 'img/pause.png') { //pause the game
         gamePaused = !gamePaused;
         EternalCycle();
+    }
+
+    if (pausePlayImgNewSrc == 'img/play.png') {
+        gamePaused = !gamePaused;
+
     }
 }
 
@@ -394,13 +394,14 @@ const win = document.getElementById('win');
 const lose = document.getElementById('lose');
 const again = document.getElementById('again');
 const victory = document.getElementById('victory');
+const press = document.getElementById('press');
 
 //CLICK ON PLAY AGAIN BUTTON
-again.onclick = function() {location.reload();} 
+again.onclick = function () { location.reload(); }
 
 //CHANGE PLAY AGAIN BUTTON COLOR
-again.addEventListener('mouseover', function() {again.style.color = '#A0DB8E';})
-$('#again').mouseout(function() {again.style.color = '#FFF';});
+again.addEventListener('mouseover', function () { again.style.color = '#A0DB8E'; })
+$('#again').mouseout(function () { again.style.color = '#FFF'; });
 
 //YOU WIN IMAGE
 function youWin() {
